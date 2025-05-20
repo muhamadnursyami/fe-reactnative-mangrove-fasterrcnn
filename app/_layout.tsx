@@ -8,8 +8,9 @@ export default function RootLayout() {
       <StatusBar hidden={true}/>
           <Stack> 
             <Stack.Screen name="index" options={{ headerShown:false }}/>
-            <Stack.Screen name="ambilfoto" />
-            <Stack.Screen name="unggahgambar" />
+            <Stack.Screen name="ambilfoto" options={{ headerShown:false }} />
+            <Stack.Screen name="hasilidentifikasi" options={{ headerShown:false }} />
+            <Stack.Screen name="unggahgambar" options={{ headerShown:false }} />
             <Stack.Screen name="jenismangrove" options={{ headerShown:false }} />
             <Stack.Screen name="jenismangrove/[id]" options={{ headerShown:false }} />
             <Stack.Screen name="developer" options={{ headerShown:false }} />

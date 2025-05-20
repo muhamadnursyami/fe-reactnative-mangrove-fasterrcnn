@@ -22,3 +22,26 @@ export const fetchGetAllJenisMangrove = async () => {
 
   return data;
 };
+
+
+export const uploadMangroveImage = async (fileUri: string, fileName: string) => {
+  const formData = new FormData();
+  formData.append('file', {
+    uri: fileUri,
+    name: fileName,
+    type: 'image/jpeg',
+  } as any);
+
+  const response = await fetch(`${BACKEND.BASE_URL}/mangrove/detect`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+    body: formData,
+  });
+
+  const json = await response.json();
+  if (!response.ok) throw new Error(json.message || 'Upload gagal');
+
+  return json;
+};
