@@ -8,17 +8,21 @@ import {
   Alert,
   Image,
   ImageBackground,
+  Modal,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
+
 
 export default function Ambilfoto() {
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
   const { loading, error, uploadImage } = useUploadImage();
   const router = useRouter();
   const navigation = useNavigation();
+  const [showRules, setShowRules] = useState(true);
   
 const openCamera = async () => {
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -55,6 +59,52 @@ const openCamera = async () => {
   };
   return (
      <ImageBackground source={require('../assets/images/background.png')} style={styles.backgroundImage}>
+     <Modal
+          visible={showRules}
+          animationType="slide"
+          transparent={true}
+        >
+          <View style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+          }}>
+            <View style={{
+              backgroundColor: 'white',
+              borderRadius: 20,
+              padding: 20,
+              maxHeight: '80%',
+              width: '90%',
+            }}>
+              <ScrollView>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginBottom: 10}}>Aturan Pengambilan Foto</Text>
+                <Text style={{fontSize: 16, marginBottom: 10, textAlign:'justify'}}>
+                  1. Pastikan foto yang diambil jelas dan fokus ke objek terlihat jelas 100% {'\n'}
+                  2. Jarak pengambilan gambar berkisaran antara 5 hingga 15 cm dari objek{'\n'}
+                  3. Mangrove yang di ambil hanya bagian  daun atau bunga dari mangrove.{'\n'}
+                  4. 1 Frame foto hanya tidak lebih dari 2/3 objek didalamnya. {'\n'}
+                  5. Hindari pencahayaan gelap atau objek lain yang mengganggu.
+                  6. Pastikan tidak ada refleksi atau bayangan yang menghalangi.
+                </Text>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: 'mediumseagreen',
+                    paddingVertical: 12,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                  }}
+                  onPress={() => setShowRules(false)}
+                >
+                  <Text style={{ color: 'white', fontSize: 16, fontWeight: '600' }}>Mengerti</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+
+     
      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
