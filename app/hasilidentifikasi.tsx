@@ -34,6 +34,7 @@ export default function HasilIdentifikasi() {
       })()
     : [];
 
+  const filteredDetections = parsedDetections.filter((det) => det.score >= 0.6);
 
   useEffect(() => {
     if (imageUri) {
@@ -45,11 +46,17 @@ export default function HasilIdentifikasi() {
     }
   }, [imageUri]);
 
-  
   const screenWidth = Dimensions.get('window').width;
-  const scaleFactor = imageSize.width
-    ? screenWidth / imageSize.width
-    : 1;
+  const scaleFactor = imageSize.width ? screenWidth / imageSize.width : 1;
+
+  // Warna berbeda untuk tiap bounding box
+  const colors = [
+    { borderColor: 'red', backgroundColor: 'rgba(255, 0, 0, 0.2)', labelBg: 'rgba(255, 0, 0, 0.7)' },
+    { borderColor: 'blue', backgroundColor: 'rgba(0, 0, 255, 0.2)', labelBg: 'rgba(0, 0, 255, 0.7)' },
+    { borderColor: 'green', backgroundColor: 'rgba(0, 255, 0, 0.2)', labelBg: 'rgba(0, 255, 0, 0.7)' },
+    { borderColor: 'orange', backgroundColor: 'rgba(255, 165, 0, 0.2)', labelBg: 'rgba(255, 165, 0, 0.7)' },
+    { borderColor: 'purple', backgroundColor: 'rgba(128, 0, 128, 0.2)', labelBg: 'rgba(128, 0, 128, 0.7)' },
+  ];
 
   return (
     <ImageBackground
@@ -66,14 +73,25 @@ export default function HasilIdentifikasi() {
         {!imageUri || !imageSize.width ? (
           <Text style={styles.noDetectionText}>Gambar tidak tersedia</Text>
         ) : (
-          <View style={{ width: '100%', height: imageSize.height * scaleFactor, paddingHorizontal: 2,  }}>
+          <View
+            style={{
+              width: '100%',
+              height: imageSize.height * scaleFactor,
+              paddingHorizontal: 2,
+            }}
+          >
             <Image
               source={{ uri: imageUri }}
-              style={{ width: '100%', height: imageSize.height * scaleFactor, borderRadius: 16 }}
+              style={{
+                width: '100%',
+                height: imageSize.height * scaleFactor,
+                borderRadius: 16,
+              }}
               resizeMode="cover"
             />
-            {parsedDetections.map((det, i) => {
+            {filteredDetections.map((det, i) => {
               const [x1, y1, x2, y2] = det.box;
+              const color = colors[i % colors.length];
               const boxStyle = {
                 position: 'absolute' as const,
                 left: x1 * scaleFactor,
@@ -81,13 +99,18 @@ export default function HasilIdentifikasi() {
                 width: (x2 - x1) * scaleFactor,
                 height: (y2 - y1) * scaleFactor,
                 borderWidth: 2,
-                borderColor: 'red',
+                borderColor: color.borderColor,
                 borderRadius: 4,
-                backgroundColor: 'rgba(255, 0, 0, 0.2)',
+                backgroundColor: color.backgroundColor,
               };
               return (
                 <View key={i} style={boxStyle}>
-                  <Text style={styles.boxLabel}>
+                  <Text
+                    style={[
+                      styles.boxLabel,
+                      { backgroundColor: color.labelBg },
+                    ]}
+                  >
                     {det.label} ({(det.score * 100).toFixed(1)}%)
                   </Text>
                 </View>
@@ -96,15 +119,26 @@ export default function HasilIdentifikasi() {
           </View>
         )}
 
-       
-        {parsedDetections.length === 0 && (
+        {filteredDetections.length === 0 && (
           <Text style={styles.noDetectionText}>Tidak ada deteksi ditemukan.</Text>
         )}
 
-        {parsedDetections.length > 0 && (
+        {filteredDetections.length > 0 && (
           <View style={styles.card}>
-            {parsedDetections.map((det, i) => (
+            {filteredDetections.length > 1 && (
+              <View>
+                <Text style={[styles.label, { marginBottom: 12, color: 'crimson' }]}>
+                  Mangrove yang anda ambil, terdeteksi memiliki kesamaan dengan jenis yang lain.
+                </Text>
+                <Text style={[styles.label, { marginBottom: 12, color: 'crimson' }]}>
+                  Silakan identifikasi bagian lain seperti bunga untuk hasil yang lebih akurat.
+                </Text>
+              </View>
+            )}
+
+            {filteredDetections.map((det, i) => (
               <View key={i} style={{ marginBottom: 16 }}>
+                <Text style={styles.label}>Prediksi {i + 1}:</Text>
                 <Text style={styles.label}>
                   Jenis Mangrove: <Text style={styles.value}>{det.label}</Text>
                 </Text>
@@ -112,19 +146,7 @@ export default function HasilIdentifikasi() {
                   Keyakinan: <Text style={styles.value}>{(det.score * 100).toFixed(2)}%</Text>
                 </Text>
                 <Text style={styles.label}>
-                  Catatan: <Text style={styles.value}>{det.data_tanaman?.catatan ?? 'Tidak ditemukan'}</Text>
-                </Text>
-                <Text style={styles.label}>
-                  Deskripsi: <Text style={styles.value}>{det.data_tanaman?.dekripsi ?? 'Tidak ditemukan'}</Text>
-                </Text>
-                <Text style={styles.label}>
-                  Ekologi: <Text style={styles.value}>{det.data_tanaman?.ekologi ?? 'Tidak ditemukan'}</Text>
-                </Text>
-                <Text style={styles.label}>
-                  Manfaat: <Text style={styles.value}>{det.data_tanaman?.manfaat ?? 'Tidak ditemukan'}</Text>
-                </Text>
-                <Text style={styles.label}>
-                  Penyebaran: <Text style={styles.value}>{det.data_tanaman?.penyebaran ?? 'Tidak ditemukan'}</Text>
+                  Detail Prediksi: <Text style={styles.value}>{det.data_tanaman?.catatan ?? 'Tidak ditemukan'}</Text>
                 </Text>
               </View>
             ))}
@@ -202,7 +224,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '700',
     fontSize: 12,
-    backgroundColor: 'rgba(255, 0, 0, 0.7)',
     paddingHorizontal: 4,
     borderTopLeftRadius: 4,
     borderBottomRightRadius: 4,

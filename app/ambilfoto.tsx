@@ -79,14 +79,15 @@ const openCamera = async () => {
               width: '90%',
             }}>
               <ScrollView>
-                <Text style={{fontWeight: 'bold', fontSize: 20, marginBottom: 10}}>Aturan Pengambilan Foto</Text>
+                <Text style={{fontWeight: 'bold', textAlign: "center" ,fontSize: 20, marginBottom: 10}}>Petunjuk Pengambilan Foto</Text>
                 <Text style={{fontSize: 16, marginBottom: 10, textAlign:'justify'}}>
-                  1. Pastikan foto yang diambil jelas dan fokus ke objek terlihat jelas 100% {'\n'}
-                  2. Jarak pengambilan gambar berkisaran antara 5 hingga 15 cm dari objek{'\n'}
-                  3. Mangrove yang di ambil hanya bagian  daun atau bunga dari mangrove.{'\n'}
-                  4. 1 Frame foto hanya tidak lebih dari 2/3 objek didalamnya. {'\n'}
-                  5. Hindari pencahayaan gelap atau objek lain yang mengganggu.
-                  6. Pastikan tidak ada refleksi atau bayangan yang menghalangi.
+                  1. Pastikan foto yang diambil jelas dan fokus ke objek terlihat jelas 100% {'\n'}{'\n'}
+                  2. Jarak pengambilan gambar berkisaran antara 7 hingga 15 cm dari objek{'\n'}{'\n'}
+                  3. Mangrove yang di ambil hanya bagian  daun atau bunga dari mangrove.{'\n'}{'\n'}
+                  4. 1 Frame foto hanya tidak lebih dari 1/2 objek didalamnya. {'\n'}{'\n'}
+                  5. Hindari pencahayaan gelap atau objek lain yang mengganggu. {'\n'}{'\n'}
+                  6. Pastikan tidak ada refleksi atau bayangan yang menghalangi.{'\n'}{'\n'}
+                  7. Pastikan foto diambil di tempat terbuka yang terpapar cahaya matahari sehingga warna, struktur dan bentuk daun atau bunga dapat kelihatan dengan jelas.
                 </Text>
                 <TouchableOpacity
                   style={{
